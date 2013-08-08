@@ -1,0 +1,910 @@
+<!doctype html>
+<html>
+<head>
+    <title>Kendo UI Mobile</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/kendo.mobile.min.js"></script>
+
+
+    <!-- For custom authenication -->
+    <script src="js/rc4.js"></script>
+
+    <!-- Jquery plug in (base 64) -->
+    <script src="js/jquery.base64.min.js"></script>
+
+    <!-- Automatic inject during PhoneGap compile time -->
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+
+    <!-- Shake.js -->
+    <script src="js/shake.js"></script>
+
+    <!-- Style -->
+    <link href="styles/kendo.common.min.css" rel="stylesheet" />
+    <link href="styles/kendo.mobile.all.min.css" rel="stylesheet" />
+
+    <style scoped>
+        #buttongroup-home .head {
+            display: block;
+            margin: 1em;
+            height: 80px;
+            background: url(./images/header.jpg) no-repeat center center;
+            -webkit-background-size: 100% auto;
+            background-size: 100% auto;
+        }
+
+        .km-ios .head,
+        .km-android .head,
+        .km-blackberry .head {
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
+        }
+
+        /* ref: http://docs.kendoui.com/getting-started/mobile/forms 
+                http://docs.kendoui.com/getting-started/web/appearance-styling
+        */
+        .km-root .km-on-android input {
+            -webkit-user-modify: inherit;
+        }
+    </style>
+
+</head>
+<body>
+
+
+    <audio id="audio_chrime">
+        <source src="multimedia/ttchimes-nu3.wav" type="audio/wav" />
+        Your browser does not support HTML5 audio.
+    </audio>
+
+
+    <!-- Main Div -->
+    <div data-role="view" id="buttongroup-home" data-show="view_selector" data-title="MRSD" data-use-native-scrolling="true">
+
+        <!-- Header -->
+        <div class="head">&nbsp;</div>
+        <ul id="select-period" data-index="0">
+            <li>Home
+            </li>
+            <li>Settings
+            </li>
+        </ul>
+        <!-- Header -->
+
+        <!-- Group 0 -->
+        <ul data-role="listview" data-style="inset" data-type="group">
+            <li>Camera View 
+           
+                <ul>
+                    <li>
+                        <div style="text-align: center">
+                            <canvas id="image_canvas" width="320" height="240">
+                                <p>Your browser doesn't support canvas.</p>
+                            </canvas>
+
+
+                        </div>
+
+                    </li>
+
+                </ul>
+            </li>
+
+            <li>Remote Control
+                <ul>
+                    <li>
+                        <div style="text-align: center">
+                            <a class="button" id="open_close_button" data-role="button" data-click="on_open_close">Open / Close</a>
+                            <a class="button" id="confirm_button" style="display: none" data-role="button" data-click="on_confirm_yes">Confirm</a>
+                            <a class="button" id="cancel_button" style="display: none" data-role="button" data-click="on_confirm_no">Cancel</a>
+                            <span id="counter_span" style="display: none">Please wait...</span>
+
+                        </div>
+
+                    </li>
+                </ul>
+
+            </li>
+
+
+            <li>Debug
+                <ul>
+                    <li>
+                        <div style="text-align: center">
+                            <input type="text" id="debug_text" />
+                        </div>
+                    </li>
+                </ul>
+
+            </li>
+
+            <li>Server Response
+                <ul>
+                    <li>
+                        <div style="text-align: center">
+                        </div>
+
+                    </li>
+                </ul>
+
+            </li>
+
+            <li>Device Info
+                <ul>
+                    <li>
+                        <div style="text-align: center">
+                            <b id='device_info'>Device Info</b>
+
+                        </div>
+
+                    </li>
+                </ul>
+
+            </li>
+        </ul>
+        <!-- Group 0  -->
+
+
+        <!-- Group 1 -->
+        <ul data-role="listview" data-style="inset" data-type="group" style="display: none">
+            <li>General Settings
+           
+                <ul>
+                    <li>Auto Stop
+                        <input id="is_auto_stop_checkbox" type="checkbox" data-role="switch"></li>
+
+                    <li>Auto Refresh
+                        <input id="is_auto_refresh_checkbox" type="checkbox" data-role="switch"></li>
+
+                </ul>
+            </li>
+
+
+
+            <li>
+                <ul>
+
+                    <li>
+                        <label>
+                            Polling Interval (sec)
+                                <input id="polling_interval_textbox" type="text" value="-1" />
+                        </label>
+                    </li>
+
+                    <li>
+                        <label>
+                            Max. images allowed
+                                <input id="max_images_allowed_textbox" type="text" value="-1" />
+                        </label>
+                    </li>
+
+                    <li>
+                        <label>
+                            Camera URL:   
+                            <input id="image_url_textbox" type="url" value="" />
+                        </label>
+
+                    </li>
+
+
+                    <li>
+                        <label>
+                            Control URL:    
+                              <input id="control_url_textbox" type="url" value="" />
+                        </label>
+
+                    </li>
+
+                    <li>
+                        <label>
+                            Username:    
+                            <input id="username_textbox" type="text" value="" />
+                        </label>
+                    </li>
+
+
+                    <li>
+                        <label>
+                            Salt:    
+                            <input id="salt_textbox" readonly="true" type="text" value="" />
+                        </label>
+                    </li>
+
+                    <li>
+                        <label>
+                            Encryption Key:    
+                            <input id="encryption_key_textbox" type="password" value="" />
+                        </label>
+                    </li>
+
+                </ul>
+
+            </li>
+
+            <li>
+                <ul>
+                    <li>
+
+
+                        <div style="text-align: center">
+                            <a class="button" data-role="button" data-click="on_save_settings">Save Settings</a>
+
+                            <a class="button" data-role="button" data-click="on_default_settings">Default</a>
+
+                            <a class="button" data-role="button" data-click="on_load_settings">Load</a>
+                        </div>
+
+                    </li>
+
+                </ul>
+            </li>
+        </ul>
+        <!-- Group 1  -->
+
+    </div>
+    <!-- Main Div -->
+
+
+    <!-- All the javascript functions -->
+    <script>
+
+        // Global variables
+        var _render_loop_id = 0;     // the unique ID is generated by windows.setinterval, it is being used to stop the loop
+        var _is_in_progress = 0;     // is remote control (opening/closing garage door) in progress
+
+        var _counter_loop_id = 0;    // the unique ID is generated by windows.setinterval, it is being used for count down
+        var _timer_counter = 30;           // count down 
+
+        var _images_counter = 0;     // To prevent looping forever and consume bandwidth, this is a safety device 
+        var _max_images_allowed = 500;
+
+
+
+        // Settings all defined as text
+        var _is_auto_stop = '0'
+        var _is_auto_refresh = '0';
+        var _image_url = '';
+        var _control_url = '';
+        var _polling_interval = '60';
+        var _username = '';
+        var _salt = '';
+        var _encryption_key = '';
+
+        // Accelerometer varaibles
+        var watchID = null;
+
+        var previousReading = {
+            x: 0,
+            y: 0,
+            z: 0
+        }
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: on_save_settings()
+        // Description: Save settings to local storage from UI and Update Global variable
+        // ------------------------------------------------------------------------------------------        
+        function on_save_settings() {
+
+            // Note: Cannot use standard JQuery .attr/prop/is (':checked') it won't update the UI properly
+            var auto_stop_switch = $("#is_auto_stop_checkbox").data("kendoMobileSwitch");
+            var auto_refresh_switch = $("#is_auto_refresh_checkbox").data("kendoMobileSwitch");
+
+            // Set to global variable from UI
+            _is_auto_stop = auto_stop_switch.check() ? "1" : "0";
+            _is_auto_refresh = auto_refresh_switch.check() ? "1" : "0";
+
+            // Other settings
+            _max_images_allowed = $('#max_images_allowed_textbox').val();
+            _image_url = $('#image_url_textbox').val();
+            _control_url = $('#control_url_textbox').val();
+            _polling_interval = $('#polling_interval_textbox').val();
+            _username = $('#username_textbox').val();
+            _salt = $('#salt_textbox').val();
+            _encryption_key = $('#encryption_key_textbox').val();
+
+            // Note: localStorage cannot take boolean, so fooked up !!!
+            // http://stackoverflow.com/questions/3263161/cannot-set-boolean-values-in-localstorage
+            localStorage.setItem('is_auto_stop', _is_auto_stop);
+            localStorage.setItem('is_auto_refresh', _is_auto_refresh);
+
+            localStorage.setItem('max_images_allowed', _max_images_allowed);
+            localStorage.setItem('image_url', _image_url);
+            localStorage.setItem('control_url', _control_url);
+            localStorage.setItem('polling_interval', _polling_interval);
+            localStorage.setItem('username', _username);
+            localStorage.setItem('salt', _salt);
+            localStorage.setItem('encryption_key', _encryption_key);
+        }
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: on_default_settings()
+        // Description: Load default settings - DOES NOT update global variable and
+        //              it DOES NOT save to storage, only update UI
+        // ------------------------------------------------------------------------------------------   
+        function on_default_settings() {
+
+            // Note: cannot use standard JQuery .attr/prop/is (':checked') it won't update the UI properly
+            var auto_stop_switch = $("#is_auto_stop_checkbox").data("kendoMobileSwitch");
+            var auto_refresh_switch = $("#is_auto_refresh_checkbox").data("kendoMobileSwitch");
+
+            auto_stop_switch.check(true);
+            auto_refresh_switch.check(true);
+
+            $('#max_images_allowed_textbox').val("1000");
+            $('#image_url_textbox').val("http://server/camera/camera.php");
+            $('#control_url_textbox').val("http://server/remote/remote.php");
+            $('#polling_interval_textbox').val("3");
+            $('#username_textbox').val("your name");
+            $('#salt_textbox').val(get_display_salt()); // for display only, not being used
+            $('#encryption_key_textbox').val("secret key");
+
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: on_load_settings()
+        // Description: Load settings from local storage (event)
+        // ------------------------------------------------------------------------------------------   
+        function on_load_settings() {
+
+            load_settings();
+        }
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: load_settings()
+        // Description: Load settings from local storage then (1) Update Global var and (2) Update UI
+        // ------------------------------------------------------------------------------------------   
+        function load_settings() {
+
+            // Note: cannot use standard JQuery .attr/prop/is (':checked') it won't update the UI properly
+            var auto_stop_switch = $("#is_auto_stop_checkbox").data("kendoMobileSwitch");
+            var auto_refresh_switch = $("#is_auto_refresh_checkbox").data("kendoMobileSwitch");
+
+            // Set to global variable from Storage
+            _is_auto_stop = localStorage.getItem('is_auto_stop') == "1" ? true : false;
+            _is_auto_refresh = localStorage.getItem('is_auto_refresh') == "1" ? true : false;
+
+            // Other settings
+            _max_images_allowed = localStorage.getItem('max_images_allowed');
+            _image_url = localStorage.getItem('image_url');
+            _control_url = localStorage.getItem('control_url');
+            _polling_interval = localStorage.getItem('polling_interval');
+            _username = localStorage.getItem('username');
+            _salt = get_display_salt();
+            _encryption_key = localStorage.getItem('encryption_key');
+
+            // Update UI
+            auto_stop_switch.check(_is_auto_stop);
+            auto_refresh_switch.check(_is_auto_refresh);
+
+            $('#max_images_allowed_textbox').val(_max_images_allowed);
+            $('#image_url_textbox').val(_image_url);
+            $('#control_url_textbox').val(_control_url);
+            $('#polling_interval_textbox').val(_polling_interval);
+            $('#username_textbox').val(_username);
+            $('#salt_textbox').val(_salt); // for display only
+            $('#encryption_key_textbox').val(_encryption_key);
+        }
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: view_selector() - KendoUI
+        // Description: Show/Hide the view based on the button clicked
+        // ------------------------------------------------------------------------------------------   
+        function view_selector() {
+            var listviews = this.element.find("ul.km-listview");
+
+            $("#select-period").kendoMobileButtonGroup({
+                select: function () {
+                    listviews.hide()
+                             .eq(this.selectedIndex)
+                             .show();
+                },
+                index: 0
+            });
+        }
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: init_image() 
+        // Description: Render first time (run once only, the rest will be handled by loop)
+        // ------------------------------------------------------------------------------------------  
+        function init_image() {
+
+            render_image();
+
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: render_all() 
+        // Description: Render all necessary 
+        // ------------------------------------------------------------------------------------------  
+        function render_all() {
+
+            is_pass = 1;
+
+            // Check for protection safety device
+            if (_is_auto_stop == 1) {
+                if (_images_counter >= _max_images_allowed) {
+                    is_pass = 0;
+                }
+            }
+
+            if (is_pass) {
+
+                render_image(); // render image on Canvas (pull image froms server)
+                render_salt();  // render salt on setting page (display only)
+            }
+            else {
+
+                // Activate safety device to protect bandwidth, stop and ask user to restart application
+                var canvas = $('#image_canvas');
+                var context = canvas[0].getContext('2d');
+
+                // clear
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                // render last update
+                context.fillStyle = "#f05050";
+                context.font = "bold 20px Arial";
+                context.textAlign = "center";
+                context.lineStyle = "#ffff00";
+                var restart_text = "Please restart application";
+                context.fillText(restart_text, context.canvas.width / 2, context.canvas.height / 2);
+
+                // Stop the loop 
+                stop_loop();
+            }
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: render_image() 
+        // Description: Get the image from the remote server and render it on HTML 5 canvas
+        // ------------------------------------------------------------------------------------------  
+        function render_image() {
+
+            // ref:
+            // http://www.html5canvastutorials.com/tutorials/html5-canvas-image-size/
+            // http://www.html5canvastutorials.com/tutorials/html5-canvas-image-loader/
+            // http://stackoverflow.com/questions/5621648/mvc-what-code-gets-called-when-you-click-the-submit-button
+
+            // alert(_username + ' ' + _encryption_key + ' ' + _image_url);
+            // Generate real salt
+            var timestamp = Math.round(new Date().getTime() / 1000);
+            var rannum = Math.floor((Math.random() * 1000000) + 1);
+            var encrypted = rc4(_username + ":" + timestamp + ":" + rannum, _encryption_key);
+            var base64encrypted = $.base64.encode(encrypted);
+            var encoded_data = encodeURIComponent(base64encrypted);
+            var image_url = _image_url;
+
+
+            var tmp_url = _image_url + '?id=3&data=' + encoded_data + '&d=' + new Date().getTime();
+
+            // $('#debug_text').val(tmp_url);
+
+            // Load the camera image on to the canvas
+            var canvas = $('#image_canvas');
+            var context = canvas[0].getContext('2d');
+            var imageObj = new Image();
+
+            imageObj.onload = function () {
+
+                // Draw the image
+                context.drawImage(imageObj, 0, 0);
+                _images_counter++;
+
+                // Render last update
+                render_last_update();
+
+                // Render progress
+                if (_is_in_progress == 1) {
+                    render_progress();
+                }
+            };
+
+            imageObj.src = image_url + '?id=3&data=' + encoded_data + '&d=' + new Date().getTime();
+
+
+        }
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: render_last_update() 
+        // Description: Draw last update on HTML 5 canvas
+        // ------------------------------------------------------------------------------------------  
+        function render_last_update() {
+
+            var canvas = $('#image_canvas');
+            var context = canvas[0].getContext('2d');
+
+            // render rectangle for text
+            context.fillStyle = "#E3E29A";
+            context.fillRect(72, context.canvas.height - 27, 175, 15);
+
+            // render last update
+            context.fillStyle = "#f05050";
+            context.font = "bold 12px Arial";
+            context.textAlign = "center";
+            context.lineStyle = "#ffff00";
+            var last_updated_text = new Date().toDateString() + " - " + new Date().toLocaleTimeString();
+
+            context.fillText(last_updated_text, (context.canvas.width / 2), (context.canvas.height - 15));
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: render_progress() 
+        // Description: Draw text on HTML 5 canvas
+        // ------------------------------------------------------------------------------------------  
+        function render_progress() {
+
+            var canvas = $('#image_canvas');
+            var context = canvas[0].getContext('2d');
+
+            // render last update
+            context.fillStyle = "#f05050";
+            context.font = "bold 20px Arial";
+            context.textAlign = "center";
+            context.lineStyle = "#ffff00";
+
+            var countdown_text = "";
+
+            if (_is_auto_refresh)
+                countdown_text = "Please wait.... [" + _timer_counter + "]";
+            else
+                countdown_text = "Manual refresh by shaking";
+
+            context.fillText(countdown_text, context.canvas.width / 2, context.canvas.height / 2);
+
+        }
+
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: play_sound() 
+        // Description: Play sound using HTML 5 audio tag (not working on Android via phonegap)
+        // ------------------------------------------------------------------------------------------  
+        function play_sound() {
+            var chrime = $('#audio_chrime')[0];
+            chrime.play();
+        }
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: render_salt() 
+        // Description: Render salt for display only, it is not being used
+        // ------------------------------------------------------------------------------------------  
+        function render_salt() {
+            $('#salt_textbox').val(get_display_salt);
+        }
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: get_display_salt() 
+        // Description: Get salt for display only, it is not being used
+        // ------------------------------------------------------------------------------------------  
+        function get_display_salt() {
+            return Math.round(new Date().getTime() / 1000) + '' + Math.floor((Math.random() * 1000000) + 1);  // for display only, not being used
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: start_loop() 
+        // Description: Start the infinite loop
+        // ------------------------------------------------------------------------------------------ 
+        function start_loop() {
+            var interval_in_millisec = parseInt(_polling_interval) * 1000;
+
+            // Keep looping image and salt
+            _render_loop_id = setInterval(function () { render_all() }, interval_in_millisec);
+
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: stop_loop() 
+        // Description: Stop the infinite loop
+        // ------------------------------------------------------------------------------------------ 
+        function stop_loop() {
+            clearInterval(_render_loop_id);
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: start_countdown() 
+        // Description: Start count down
+        // ------------------------------------------------------------------------------------------ 
+        function start_countdown() {
+            _counter_loop_id = setInterval(function () { countdown_counter() }, 1000);
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: stop_reset_countdown() 
+        // Description: Stop and reset count down
+        // ------------------------------------------------------------------------------------------ 
+        function stop_reset_countdown() {
+            _timer_counter = 30;    // Starts from 30 seconds
+            clearInterval(_counter_loop_id);
+            _is_in_progress = 0;
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: countdown_counter() 
+        // Description: Update UI of counter
+        // ------------------------------------------------------------------------------------------ 
+        function countdown_counter() {
+            $('#counter_span').text("Please wait.... " + _timer_counter);
+            _timer_counter--;
+
+            if (_timer_counter <= 0) {
+                stop_reset_countdown();
+                $('#open_close_button').show();
+                $('#counter_span').hide();
+            }
+        }
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: on_open_close()
+        // Description: Open/close button is pressed
+        // ------------------------------------------------------------------------------------------
+        function on_open_close() {
+
+            $('#open_close_button').hide();
+
+            show_confirmation();
+
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: show_confirmation()
+        // Description: show confirmation
+        // ------------------------------------------------------------------------------------------
+        function show_confirmation() {
+
+            $('#confirm_button').show();
+            $('#cancel_button').show();
+
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: hide_confirmation()
+        // Description: hide confirmation
+        // ------------------------------------------------------------------------------------------
+        function hide_confirmation() {
+
+            $('#confirm_button').hide();
+            $('#cancel_button').hide();
+        }
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: on_confirm_yes()
+        // Description: Confirm Yes
+        // ------------------------------------------------------------------------------------------
+        function on_confirm_yes() {
+
+            $('#open_close_button').hide();
+
+            $('#counter_span').show();
+            start_countdown();
+
+
+            _is_in_progress = 1;  // for looping
+            render_progress();        // for immediate display
+
+            play_sound();
+
+            hide_confirmation();
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: on_confirm_no()
+        // Description: Confirm No
+        // ------------------------------------------------------------------------------------------
+        function on_confirm_no() {
+
+            $('#open_close_button').show();
+
+            hide_confirmation();
+        }
+
+
+
+        // ------------------------------------------------------------------------------------------
+        // Name: on_device_ready()
+        // Description: [PhoneGap] When device is ready, able to use all phoneGap features
+        // ------------------------------------------------------------------------------------------
+        function on_device_ready() {
+
+            $('#device_info').html('Device Name: ' + device.name + '<br />' +
+                               // 'Device Cordova: ' + device.cordova + '<br />' +
+                                'Device Platform: ' + device.platform + '<br />' +
+                               //  'Device UUID: ' + device.uuid + '<br />' +
+                                'Device Version: ' + device.version + '<br />');
+
+            startWatch();
+
+        }
+
+        // Start watching the acceleration
+        //
+        function startWatch() {
+
+            // Accelerometer
+            // watchID = navigator.accelerometer.watchAcceleration(onAccSuccess, onAccError, { frequency: 200 });
+
+            // console.log("test on log");
+            //  navigator.accelerometer.getCurrentAcceleration(onAccSuccess, onAccError);
+
+            //var shake = new Shake({
+            //    frequency: 300,                                                //milliseconds between polls for accelerometer data.
+            //    waitBetweenShakes: 1000,                                       //milliseconds to wait before watching for more shake events.
+            //    threshold: 12,                                                 //how hard the shake has to be to register.
+            //    success: function (magnitude, accelerationDelta, timestamp)
+            //    {
+            //        $('#device_info').html("Shaked detected = " + magnitude + " " + accelerationDelta + " " + timestamp);
+            //    }, //callback when shake is detected. "this" will be the "shake" object.
+            //    failure: function ()
+            //    {
+            //        $('#device_info').html("Watch has failed");
+            //    },                                        //callback when watching/getting acceleration fails. "this" will be the "shake" object.
+            //});
+
+            //shake.startWatch(function () { $('#device_info').html("Watch has started"); });
+            //shake.stopWatch(function () { $('#device_info').html("Watch has stopped"); });
+
+
+            // REf: http://mobile.tutsplus.com/tutorials/phonegap/phonegap-from-scratch-device-apis/
+
+        
+
+            watchID = navigator.accelerometer.watchAcceleration(onAccSuccess, onAccError, { frequency: 2000 });
+
+
+        }
+
+
+
+        // Stop watching the acceleration
+        //
+        //function stopWatch() {
+        //    if (watchID) {
+        //        navigator.accelerometer.clearWatch(watchID);
+        //        watchID = null;
+        //    }
+        //}
+
+
+        function onAccSuccess(acceleration) {
+
+            //$('#device_info').html('Acceleration X: ' + acceleration.x + '<br />' +
+            // 'Acceleration Y: ' + acceleration.y + '<br />' +
+            // 'Acceleration Z: ' + acceleration.z + '<br />' +
+            // 'Timestamp: ' + acceleration.timestamp + '<br />');
+
+
+            var changes = {}, bound = 0.5;
+
+            if (previousReading.x == null) {
+                // first time
+                previousReading = {
+                    x: acceleration.x,
+                    y: acceleration.y,
+                    z: acceleration.z
+                }
+            }
+         
+
+                // Repeat 
+                changes.x = Math.abs(previousReading.x, acceleration.x);
+                changes.y = Math.abs(previousReading.y, acceleration.y);
+                changes.z = Math.abs(previousReading.z, acceleration.z);
+
+                previousReading = {
+                    x: changes.x,
+                    y: changes.y,
+                    z: changes.z
+                }
+
+
+
+             $('#device_info').html('Changes X: ' + changes.x + '<br />' +
+             'Changes Y: ' + changes.y + '<br />' +
+             'Changes Z: ' + changes.z + '<br />' + 
+             'Timestamp: ' + acceleration.timestamp + '<br />');
+
+             if (changes.x > bound && changes.y > bound && changes.z > bound) {
+                 shaken();
+             }
+             else 
+             {
+                 not_shaken();
+             }
+
+        }
+
+        function onAccError() {
+            $('#device_info').html('Error');
+        }
+
+
+
+
+        function shaken() {
+            $('#debug_text').val('Shaken');
+        }
+
+        
+        function not_shaken() {
+            $('#debug_text').val('Not Shaken');
+        }
+
+        // Error
+        function onError() {
+            $('#debug_text').val('Accelerometer error detected');
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: on_resume()
+        // Description: [PhoneGap] This is called When application is activated from background
+        //              Resume getting image from server again
+        // ------------------------------------------------------------------------------------------
+        function on_resume() {
+            if (_is_auto_refresh)
+                start_loop();
+        }
+
+        // ------------------------------------------------------------------------------------------
+        // Name: on_pause()
+        // Description: [PhoneGap] This is called when application hidden and sent to background
+        //              Stop getting image from server to save bandwidth
+        // ------------------------------------------------------------------------------------------
+        function on_pause() {
+            stop_loop();
+        }
+
+
+
+
+
+    </script>
+
+
+    <script>
+
+        // Kendo Init for mobile application
+        var app = new kendo.mobile.Application(document.body,
+        {
+            platform: 'ios',
+            transition: 'slide',
+            loading: "<h1>Please wait...</h1>"
+        });
+
+        // General Jquery onload 
+        $(document).ready(function () {
+
+            // Phonegap device ready event 
+            document.addEventListener("deviceready", on_device_ready, false);
+            document.addEventListener("pause", on_pause, false);
+            document.addEventListener("resume", on_resume, false);
+
+            // Load the settings from local storage
+            load_settings();
+
+            // Camera init
+            init_image();
+
+            // Load looping            
+            if (_is_auto_refresh)
+                start_loop();
+
+
+        });
+
+
+
+
+    </script>
+
+</body>
+</html>
