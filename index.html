@@ -745,9 +745,9 @@
             var watchID = null;
 
             var previousReading = {
-                x: 0,
-                y: 0,
-                z: 0
+                x: null,
+                y: null,
+                z: null
             }
 
             // Start watching the acceleration
@@ -809,24 +809,35 @@
 
                 if (previousReading.x == null) {
                     // first time
+                   
+                    changes.x = 0;
+                    changes.y = 0;
+                    changes.z = 0;
+
                     previousReading = {
-                        x: acceleration.x,
-                        y: acceleration.y,
-                        z: acceleration.z
+                        x: 0,
+                        y: 0,
+                        z: 0
                     }
+
+
+                }
+                else {
+
+
+                    // Repeat 
+                    changes.x = Math.abs(previousReading.x, acceleration.x);
+                    changes.y = Math.abs(previousReading.y, acceleration.y);
+                    changes.z = Math.abs(previousReading.z, acceleration.z);
+
+                    previousReading = {
+                        x: changes.x,
+                        y: changes.y,
+                        z: changes.z
+                    }
+
                 }
 
-
-                // Repeat 
-                changes.x = Math.abs(previousReading.x, acceleration.x);
-                changes.y = Math.abs(previousReading.y, acceleration.y);
-                changes.z = Math.abs(previousReading.z, acceleration.z);
-
-                previousReading = {
-                    x: changes.x,
-                    y: changes.y,
-                    z: changes.z
-                }
 
 
 
