@@ -826,9 +826,9 @@
 
 
                     // Repeat 
-                    changes.x = acceleration.x - previousReading.x;
-                    changes.y = acceleration.y - previousReading.y;
-                    changes.z = acceleration.z - previousReading.z;
+                    changes.x = Math.abs(acceleration.x - previousReading.x);
+                    changes.y = Math.abs(acceleration.y - previousReading.y);
+                    changes.z = Math.abs(acceleration.z - previousReading.z);
 
                     previousReading = {
                         x: acceleration.x,
