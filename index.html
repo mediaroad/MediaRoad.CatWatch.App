@@ -743,6 +743,7 @@
 
             // Accelerometer varaibles
             var watchID = null;
+            var threshold = 12;
 
             var previousReading = {
                 x: null,
@@ -780,7 +781,7 @@
 
                 // REf: http://mobile.tutsplus.com/tutorials/phonegap/phonegap-from-scratch-device-apis/
 
-                watchID = navigator.accelerometer.watchAcceleration(onAccSuccess, onAccError, { frequency: 2000 });
+                watchID = navigator.accelerometer.watchAcceleration(onAccSuccess, onAccError, { frequency: 300 });
 
 
             }
@@ -846,7 +847,17 @@
                 'aaChanges Z: ' + changes.z + '<br />' +
                 'Timestamp: ' + acceleration.timestamp + '<br />');
 
-                if (changes.x > bound && changes.y > bound && changes.z > bound) {
+
+                var magnitude = Math.sqrt(
+                      Math.pow(changes.x, 2) +
+                      Math.pow(changes.y, 2) +
+                      Math.pow(changes.z, 2)
+                  );
+
+
+                    //    if (changes.x > bound && changes.y > bound && changes.z > bound) {
+
+                if (magnitude >= threshold) {
                     shaken();
                 }
                 else {
