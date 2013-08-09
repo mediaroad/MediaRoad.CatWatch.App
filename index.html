@@ -826,9 +826,13 @@
 
 
                     // Repeat 
-                    changes.x = Math.abs(previousReading.x, acceleration.x);
-                    changes.y = Math.abs(previousReading.y, acceleration.y);
-                    changes.z = Math.abs(previousReading.z, acceleration.z);
+                    //changes.x = Math.abs(previousReading.x, acceleration.x);
+                    //changes.y = Math.abs(previousReading.y, acceleration.y);
+                    //changes.z = Math.abs(previousReading.z, acceleration.z);
+
+                    changes.x = acceleration.x;
+                    changes.y = acceleration.y;
+                    changes.z =  acceleration.z;
 
                     previousReading = {
                         x: changes.x,
