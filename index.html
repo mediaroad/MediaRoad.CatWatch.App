@@ -271,14 +271,7 @@
         var _salt = '';
         var _encryption_key = '';
 
-        // Accelerometer varaibles
-        var watchID = null;
 
-        var previousReading = {
-            x: 0,
-            y: 0,
-            z: 0
-        }
 
 
         // ------------------------------------------------------------------------------------------
@@ -722,111 +715,12 @@
                                //  'Device UUID: ' + device.uuid + '<br />' +
                                 'Device Version: ' + device.version + '<br />');
 
-            startWatch();
+            var shaken = new Shaken(null);
+            shaken.StartWatch();
 
         }
 
-        // Start watching the acceleration
-        //
-        function startWatch() {
-
-            // Accelerometer
-            // watchID = navigator.accelerometer.watchAcceleration(onAccSuccess, onAccError, { frequency: 200 });
-
-            // console.log("test on log");
-            //  navigator.accelerometer.getCurrentAcceleration(onAccSuccess, onAccError);
-
-            //var shake = new Shake({
-            //    frequency: 300,                                                //milliseconds between polls for accelerometer data.
-            //    waitBetweenShakes: 1000,                                       //milliseconds to wait before watching for more shake events.
-            //    threshold: 12,                                                 //how hard the shake has to be to register.
-            //    success: function (magnitude, accelerationDelta, timestamp)
-            //    {
-            //        $('#device_info').html("Shaked detected = " + magnitude + " " + accelerationDelta + " " + timestamp);
-            //    }, //callback when shake is detected. "this" will be the "shake" object.
-            //    failure: function ()
-            //    {
-            //        $('#device_info').html("Watch has failed");
-            //    },                                        //callback when watching/getting acceleration fails. "this" will be the "shake" object.
-            //});
-
-            //shake.startWatch(function () { $('#device_info').html("Watch has started"); });
-            //shake.stopWatch(function () { $('#device_info').html("Watch has stopped"); });
-
-
-            // REf: http://mobile.tutsplus.com/tutorials/phonegap/phonegap-from-scratch-device-apis/
-
-        
-
-            watchID = navigator.accelerometer.watchAcceleration(onAccSuccess, onAccError, { frequency: 2000 });
-
-
-        }
-
-
-
-        // Stop watching the acceleration
-        //
-        //function stopWatch() {
-        //    if (watchID) {
-        //        navigator.accelerometer.clearWatch(watchID);
-        //        watchID = null;
-        //    }
-        //}
-
-
-        function onAccSuccess(acceleration) {
-
-            //$('#device_info').html('Acceleration X: ' + acceleration.x + '<br />' +
-            // 'Acceleration Y: ' + acceleration.y + '<br />' +
-            // 'Acceleration Z: ' + acceleration.z + '<br />' +
-            // 'Timestamp: ' + acceleration.timestamp + '<br />');
-
-
-            var changes = {}, bound = 0.5;
-
-            if (previousReading.x == null) {
-                // first time
-                previousReading = {
-                    x: acceleration.x,
-                    y: acceleration.y,
-                    z: acceleration.z
-                }
-            }
-         
-
-                // Repeat 
-                changes.x = Math.abs(previousReading.x, acceleration.x);
-                changes.y = Math.abs(previousReading.y, acceleration.y);
-                changes.z = Math.abs(previousReading.z, acceleration.z);
-
-                previousReading = {
-                    x: changes.x,
-                    y: changes.y,
-                    z: changes.z
-                }
-
-
-
-             $('#device_info').html('Changes X: ' + changes.x + '<br />' +
-             'Changes Y: ' + changes.y + '<br />' +
-             'Changes Z: ' + changes.z + '<br />' + 
-             'Timestamp: ' + acceleration.timestamp + '<br />');
-
-             if (changes.x > bound && changes.y > bound && changes.z > bound) {
-                 shaken();
-             }
-             else 
-             {
-                 not_shaken();
-             }
-
-        }
-
-        function onAccError() {
-            $('#device_info').html('Error');
-        }
-
+     
 
 
 
@@ -843,6 +737,122 @@
         function onError() {
             $('#debug_text').val('Accelerometer error detected');
         }
+
+
+        function Shaken(options) {
+
+            // Accelerometer varaibles
+            var watchID = null;
+
+            var previousReading = {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+
+            // Start watching the acceleration
+            
+            this.StartWatch = function () {
+
+                // Accelerometer
+                // watchID = navigator.accelerometer.watchAcceleration(onAccSuccess, onAccError, { frequency: 200 });
+
+                // console.log("test on log");
+                //  navigator.accelerometer.getCurrentAcceleration(onAccSuccess, onAccError);
+
+                //var shake = new Shake({
+                //    frequency: 300,                                                //milliseconds between polls for accelerometer data.
+                //    waitBetweenShakes: 1000,                                       //milliseconds to wait before watching for more shake events.
+                //    threshold: 12,                                                 //how hard the shake has to be to register.
+                //    success: function (magnitude, accelerationDelta, timestamp)
+                //    {
+                //        $('#device_info').html("Shaked detected = " + magnitude + " " + accelerationDelta + " " + timestamp);
+                //    }, //callback when shake is detected. "this" will be the "shake" object.
+                //    failure: function ()
+                //    {
+                //        $('#device_info').html("Watch has failed");
+                //    },                                        //callback when watching/getting acceleration fails. "this" will be the "shake" object.
+                //});
+
+                //shake.startWatch(function () { $('#device_info').html("Watch has started"); });
+                //shake.stopWatch(function () { $('#device_info').html("Watch has stopped"); });
+
+
+                // REf: http://mobile.tutsplus.com/tutorials/phonegap/phonegap-from-scratch-device-apis/
+
+                watchID = navigator.accelerometer.watchAcceleration(onAccSuccess, onAccError, { frequency: 2000 });
+
+
+            }
+
+
+
+            // Stop watching the acceleration
+            
+            this.StopWatch = function() {
+                if (watchID) {
+                    navigator.accelerometer.clearWatch(watchID);
+                    watchID = null;
+                }
+            }
+
+
+            function onAccSuccess(acceleration) {
+
+                //$('#device_info').html('Acceleration X: ' + acceleration.x + '<br />' +
+                // 'Acceleration Y: ' + acceleration.y + '<br />' +
+                // 'Acceleration Z: ' + acceleration.z + '<br />' +
+                // 'Timestamp: ' + acceleration.timestamp + '<br />');
+
+
+                var changes = {}, bound = 0.5;
+
+                if (previousReading.x == null) {
+                    // first time
+                    previousReading = {
+                        x: acceleration.x,
+                        y: acceleration.y,
+                        z: acceleration.z
+                    }
+                }
+
+
+                // Repeat 
+                changes.x = Math.abs(previousReading.x, acceleration.x);
+                changes.y = Math.abs(previousReading.y, acceleration.y);
+                changes.z = Math.abs(previousReading.z, acceleration.z);
+
+                previousReading = {
+                    x: changes.x,
+                    y: changes.y,
+                    z: changes.z
+                }
+
+
+
+                $('#device_info').html('Changes X: ' + changes.x + '<br />' +
+                'Changes Y: ' + changes.y + '<br />' +
+                'Changes Z: ' + changes.z + '<br />' +
+                'Timestamp: ' + acceleration.timestamp + '<br />');
+
+                if (changes.x > bound && changes.y > bound && changes.z > bound) {
+                    shaken();
+                }
+                else {
+                    not_shaken();
+                }
+
+            }
+
+            function onAccError() {
+                $('#device_info').html('Error');
+            }
+
+
+        }
+
+
+
 
         // ------------------------------------------------------------------------------------------
         // Name: on_resume()
