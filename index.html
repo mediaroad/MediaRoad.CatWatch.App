@@ -722,7 +722,7 @@
                 success: shake_detected,                                        //callback when shake is detected. "this" will be the "shake" object.
                 failure: shake_not_detected,                                    //callback when watching/getting acceleration fails. "this" will be the "shake" object.
             });
-            shaken.startWatch();
+            shaken.StartWatch();
 
         }
 
@@ -881,6 +881,17 @@
 
     <script>
 
+
+        // local debug
+        //var shaken = new Shaken({
+        //    frequency: 3000,                                                //milliseconds between polls for accelerometer data.
+        //    threshold: 50,                                                  //how hard the shake has to be to register.
+        //    success: shake_detected,                                        //callback when shake is detected. "this" will be the "shake" object.
+        //    failure: shake_not_detected,                                    //callback when watching/getting acceleration fails. "this" will be the "shake" object.
+        //});
+        //shaken.StartWatch();
+
+
         // Kendo Init for mobile application
         var app = new kendo.mobile.Application(document.body,
         {
@@ -906,6 +917,9 @@
             // Load looping            
             if (_is_auto_refresh)
                 start_loop();
+
+
+
 
 
         });
