@@ -715,21 +715,27 @@
                                //  'Device UUID: ' + device.uuid + '<br />' +
                                 'Device Version: ' + device.version + '<br />');
 
-            var shaken = new Shaken(null);
-            shaken.StartWatch();
+            //var shaken = new Shaken(null);
+            //shaken.StartWatch();
+
+
+            var shaken = new Shaken({
+                frequency: 3000,                                                //milliseconds between polls for accelerometer data.
+                threshold: 50,                                                  //how hard the shake has to be to register.
+                success: shake_detected,                                        //callback when shake is detected. "this" will be the "shake" object.
+                failure: shake_not_detected,                                    //callback when watching/getting acceleration fails. "this" will be the "shake" object.
+            });
+            shaken.startWatch();
 
         }
 
-     
 
-
-
-        function shaken() {
+        function shake_detected(magnitude, accelerationDelta, timestamp) {
             $('#debug_text').val('Shaken');
         }
 
         
-        function not_shaken() {
+        function shake_not_detected() {
             $('#debug_text').val('Not Shaken');
         }
 
@@ -838,9 +844,9 @@
 
                 // Check magniture to determine shake or not
                 if (magnitude >= options.threshold) 
-                    shaken();
+                    options.success.call(this, magnitude, changes, acceleration.timestamp);
                else 
-                    not_shaken();                
+                    options.failure.call(this);
 
             } // method
 
