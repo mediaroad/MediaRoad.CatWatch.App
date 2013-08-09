@@ -17,9 +17,6 @@
     <!-- Automatic inject during PhoneGap compile time -->
     <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 
-    <!-- Shake.js -->
-    <script src="js/shake.js"></script>
-
     <!-- Style -->
     <link href="styles/kendo.common.min.css" rel="stylesheet" />
     <link href="styles/kendo.mobile.all.min.css" rel="stylesheet" />
@@ -753,13 +750,6 @@
 
         function Shaken(options) {
 
-            // Options via parameters
-            defaultOptions = {
-                frequency: 300,
-                threshold: 12,
-                success: undefined,
-                failure: undefined
-            }
 
             // Accelerometer varaibles
             var watchID = null;
@@ -767,6 +757,14 @@
                 x: null,
                 y: null,
                 z: null
+            }
+
+            // Options via parameters
+            var defaultOptions = {
+                frequency: 300,
+                threshold: 12,
+                success: undefined,
+                failure: undefined
             }
 
             // Get paramers
