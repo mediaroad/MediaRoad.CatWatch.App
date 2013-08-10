@@ -95,7 +95,7 @@ function Shaken(options) {
         }
 
         // report progress (e.g. print to screen)
-        options.progress.call(this, changes, acceleration.timestamp);
+     //   options.progress.call(this, changes, acceleration.timestamp);
 
         // magnitude
         var magnitude = Math.sqrt(
