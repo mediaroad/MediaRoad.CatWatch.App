@@ -17,6 +17,9 @@
     <!-- Automatic inject during PhoneGap compile time -->
     <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 
+    <!-- Shaken.js to detect device shaking -->
+    <script src="js/shaken.js"></script>
+
     <!-- Style -->
     <link href="styles/kendo.common.min.css" rel="stylesheet" />
     <link href="styles/kendo.mobile.all.min.css" rel="stylesheet" />
@@ -712,146 +715,49 @@
                                //  'Device UUID: ' + device.uuid + '<br />' +
                                 'Device Version: ' + device.version + '<br />');
 
-            //var shaken = new Shaken(null);
-            //shaken.StartWatch();
-
-
+            // Create Shaken object for shake detection
             var shaken = new Shaken({
-                frequency: 3000,                                                //milliseconds between polls for accelerometer data.
-                threshold: 50,                                                  //how hard the shake has to be to register.
+                frequency: 300,                                                //milliseconds between polls for accelerometer data.
+                threshold: 12,                                                  //how hard the shake has to be to register.
                 success: shake_detected,                                        //callback when shake is detected. "this" will be the "shake" object.
                 failure: shake_not_detected,                                    //callback when watching/getting acceleration fails. "this" will be the "shake" object.
+                progress: shake_detecting                                      // callback when moving
             });
             shaken.StartWatch();
 
         }
 
 
+        // ------------------------------------------------------------------------------------------
+        // Name: shake_detected()
+        // Description: When shake is detected
+        // ------------------------------------------------------------------------------------------
         function shake_detected(magnitude, accelerationDelta, timestamp) {
-            $('#debug_text').val('Shaken');
+            $('#debug_text').val('Shaken!!');
         }
 
-        
+
+        // ------------------------------------------------------------------------------------------
+        // Name: shake_not_detected()
+        // Description: When shake is not detected
+        // ------------------------------------------------------------------------------------------
         function shake_not_detected() {
-            $('#debug_text').val('Not Shaken');
+            $('#debug_text').val('Not Shaken!!!');
         }
-
-        // Error
-        function onError() {
-            $('#debug_text').val('Accelerometer error detected');
-        }
-
-
         
 
-        // Shaken
-        // REf: http://mobile.tutsplus.com/tutorials/phonegap/phonegap-from-scratch-device-apis/
-        // Modified by Mythos-Rini
-
-        function Shaken(options) {
-
-
-            // Accelerometer varaibles
-            var watchID = null;
-            var previousReading = {
-                x: null,
-                y: null,
-                z: null
-            }
-
-            // Options via parameters
-            var defaultOptions = {
-                frequency: 300,
-                threshold: 12,
-                success: undefined,
-                failure: undefined
-            }
-
-            // Get paramers
-            for (var p in defaultOptions)
-                if (!options.hasOwnProperty(p))
-                    options[p] = defaultOptions[p];
-
-
-            // Start watching the acceleration            
-            this.StartWatch = function () {
-                watchID = navigator.accelerometer.watchAcceleration(onAccSuccess, onAccError, { frequency: options.frequency });
-            }
-
-            // Stop watching the acceleration            
-            this.StopWatch = function() {
-                if (watchID) {
-                    navigator.accelerometer.clearWatch(watchID);
-                    watchID = null;
-                }
-            }
-
-
-            // onError watch
-            function onAccError() {
-                // $('#device_info').html('Error');
-                console.log("Exception: accelerometer onError is called");
-            }
-
-
-            // onSuccess watch
-            function onAccSuccess(acceleration) {
-
-                var changes = {}
-
-                // first time
-                if (previousReading.x == null) {
-                                       
-                    changes.x = 0;
-                    changes.y = 0;
-                    changes.z = 0;
-
-                    previousReading = {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    }
-                }
-                else {
-
-                    // Repeat 
-                    changes.x = Math.abs(acceleration.x - previousReading.x);
-                    changes.y = Math.abs(acceleration.y - previousReading.y);
-                    changes.z = Math.abs(acceleration.z - previousReading.z);
-
-                    previousReading = {
-                        x: acceleration.x,
-                        y: acceleration.y,
-                        z: acceleration.z
-                    }
-
-                }
-
-                // Debug print info
-                $('#device_info').html('Changes X: ' + changes.x + '<br />' +
-                'Changes Y: ' + changes.y + '<br />' +
-                'Changes Z: ' + changes.z + '<br />' +
-                'Timestamp: ' + acceleration.timestamp + '<br />');
-
-
-                var magnitude = Math.sqrt(
-                      Math.pow(changes.x, 2) +
-                      Math.pow(changes.y, 2) +
-                      Math.pow(changes.z, 2)
-                  );
-
-                // Check magniture to determine shake or not
-                if (magnitude >= options.threshold) 
-                    options.success.call(this, magnitude, changes, acceleration.timestamp);
-               else 
-                    options.failure.call(this);
-
-            } // method
-
-        } // class
-
-
-
+        // ------------------------------------------------------------------------------------------
+        // Name: shake_detecting()
+        // Description: When detecting the shake
+        // ------------------------------------------------------------------------------------------
+        function shake_detecting() {
+            // Debug print info
+            $('#device_info').html('Changes X: ' + changes.x + '<br />' +
+            'Changes Y: ' + changes.y + '<br />' +
+            'Changes Z: ' + changes.z + '<br />' +
+            'Timestamp: ' + acceleration.timestamp + '<br />');
+        }
+                
 
         // ------------------------------------------------------------------------------------------
         // Name: on_resume()
@@ -917,9 +823,6 @@
             // Load looping            
             if (_is_auto_refresh)
                 start_loop();
-
-
-
 
 
         });
