@@ -797,7 +797,10 @@
         // Description: When shake is detected
         // ------------------------------------------------------------------------------------------
         function shake_detected(magnitude, accelerationDelta, timestamp) {
-            $('#debug_text').html('Shaken!!');
+            $('#debug_text').html('Shaken detected');
+
+            // Render image when shaken
+            render_image();
         }
 
 
@@ -806,7 +809,7 @@
         // Description: When shake is not detected
         // ------------------------------------------------------------------------------------------
         function shake_not_detected() {
-            $('#debug_text').html('Not Shaken!!!');
+            $('#debug_text').html('Shake is not detected');
         }
         
 
