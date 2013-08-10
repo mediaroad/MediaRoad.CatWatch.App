@@ -750,12 +750,12 @@
         // Name: shake_detecting()
         // Description: When detecting the shake
         // ------------------------------------------------------------------------------------------
-        function shake_detecting() {
+        function shake_detecting(accelerationDelta, timestamp) {
             // Debug print info
-            $('#device_info').html('Changes X: ' + changes.x + '<br />' +
-            'Changes Y: ' + changes.y + '<br />' +
-            'Changes Z: ' + changes.z + '<br />' +
-            'Timestamp: ' + acceleration.timestamp + '<br />');
+            $('#device_info').html('Changes X: ' + accelerationDelta.x + '<br />' +
+            'Changes Y: ' + accelerationDelta.y + '<br />' +
+            'Changes Z: ' + accelerationDelta.z + '<br />' +
+            'Timestamp: ' + timestamp + '<br />');
         }
                 
 
@@ -789,13 +789,15 @@
 
 
         // local debug
-        //var shaken = new Shaken({
-        //    frequency: 3000,                                                //milliseconds between polls for accelerometer data.
-        //    threshold: 50,                                                  //how hard the shake has to be to register.
-        //    success: shake_detected,                                        //callback when shake is detected. "this" will be the "shake" object.
-        //    failure: shake_not_detected,                                    //callback when watching/getting acceleration fails. "this" will be the "shake" object.
-        //});
-        //shaken.StartWatch();
+        // Create Shaken object for shake detection
+        var shaken = new Shaken({
+            frequency: 300,                                                //milliseconds between polls for accelerometer data.
+            threshold: 12,                                                  //how hard the shake has to be to register.
+            success: shake_detected,                                        //callback when shake is detected. "this" will be the "shake" object.
+            failure: shake_not_detected,                                    //callback when watching/getting acceleration fails. "this" will be the "shake" object.
+            progress: shake_detecting                                      // callback when moving
+        });
+        shaken.StartWatch();
 
 
         // Kendo Init for mobile application
