@@ -790,14 +790,14 @@
 
         // local debug
         // Create Shaken object for shake detection
-        var shaken = new Shaken({
-            frequency: 300,                                                //milliseconds between polls for accelerometer data.
-            threshold: 12,                                                  //how hard the shake has to be to register.
-            success: shake_detected,                                        //callback when shake is detected. "this" will be the "shake" object.
-            failure: shake_not_detected,                                    //callback when watching/getting acceleration fails. "this" will be the "shake" object.
-            progress: shake_detecting                                      // callback when moving
-        });
-        shaken.StartWatch();
+        //var shaken = new Shaken({
+        //    frequency: 300,                                                //milliseconds between polls for accelerometer data.
+        //    threshold: 12,                                                  //how hard the shake has to be to register.
+        //    success: shake_detected,                                        //callback when shake is detected. "this" will be the "shake" object.
+        //    failure: shake_not_detected,                                    //callback when watching/getting acceleration fails. "this" will be the "shake" object.
+        //    progress: shake_detecting                                      // callback when moving
+        //});
+        //shaken.StartWatch();
 
 
         // Kendo Init for mobile application
