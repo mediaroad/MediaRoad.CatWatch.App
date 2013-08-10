@@ -22,7 +22,7 @@
 
     <!-- AppConfig -->
     <script src="js/mroad.appconfig.js"></script>
-    
+
     <!-- Style -->
     <link href="styles/kendo.common.min.css" rel="stylesheet" />
     <link href="styles/kendo.mobile.all.min.css" rel="stylesheet" />
@@ -240,18 +240,18 @@
         var _timer_counter = 30;     // count down 
         var _images_counter = 0;     // To prevent looping forever and consume bandwidth, this is a safety device 
 
-                
+
         // Local Config 
         var _localConfig = {
-            IsAutoStop : false,
+            IsAutoStop: false,
             IsAutoRefresh: false,
             IsDebug: false,
-            MaxImagesAllowed : 500,
-            ImageUrl : '',
-            ControlUrl : '',
-            PollingInterval : 60,
-            UserName : '',
-            Salt : '',
+            MaxImagesAllowed: 500,
+            ImageUrl: '',
+            ControlUrl: '',
+            PollingInterval: 60,
+            UserName: '',
+            Salt: '',
             EncryptionKey: '',
         }
 
@@ -282,7 +282,7 @@
             _localConfig.UserName = $('#username_textbox').val();
             _localConfig.Salt = $('#salt_textbox').val();
             _localConfig.EncryptionKey = $('#encryption_key_textbox').val();
-            
+
             // Save to AppConfig storage in HTML5
             _appConfig.IsAutoStop = _localConfig.IsAutoStop;
             _appConfig.IsAutoRefresh = _localConfig.IsAutoRefresh;
@@ -351,7 +351,7 @@
 
             // Load from HTML5 storage
             _appConfig.LoadSettings();
-            
+
             // Set to global variable from Storage
             _localConfig.IsAutoStop = _appConfig.IsAutoStop;
             _localConfig.IsAutoRefresh = _appConfig.IsAutoRefresh;
@@ -361,7 +361,7 @@
             _localConfig.ControlUrl = _appConfig.ControlUrl;
             _localConfig.PollingInterval = _appConfig.PollingInterval;
             _localConfig.UserName = _appConfig.UserName;
-            _localConfig.Salt =  get_display_salt();
+            _localConfig.Salt = get_display_salt();
             _localConfig.EncryptionKey = _appConfig.EncryptionKey;
 
             // Update UI
@@ -479,11 +479,11 @@
             // http://stackoverflow.com/questions/5621648/mvc-what-code-gets-called-when-you-click-the-submit-button
 
             // alert(_username + ' ' + _encryption_key + ' ' + _image_url);
-          
+
             var encoded_data = get_authenication_data();
             var image_url = _localConfig.ImageUrl;
 
-            
+
             // Load the camera image on to the canvas
             var canvas = $('#image_canvas');
             var context = canvas[0].getContext('2d');
@@ -513,7 +513,7 @@
 
         }
 
-        
+
         // ------------------------------------------------------------------------------------------
         // Name: render_refresh_mode() 
         // Description: Add "A" or "M" text to the sccreen
@@ -539,7 +539,7 @@
             else
                 mode_text = "M";
 
-            context.fillText(mode_text, (context.canvas.width -15), 15);
+            context.fillText(mode_text, (context.canvas.width - 15), 15);
         }
 
 
@@ -687,7 +687,7 @@
             $('#open_close_button').hide();
 
             show_confirmation();
-     
+
         }
 
         // ------------------------------------------------------------------------------------------
@@ -773,12 +773,6 @@
         // ------------------------------------------------------------------------------------------
         function on_device_ready() {
 
-            $('#debug_text').html('Device Name: ' + device.name + '<br />' +
-                               // 'Device Cordova: ' + device.cordova + '<br />' +
-                                'Device Platform: ' + device.platform + '<br />' +
-                               //  'Device UUID: ' + device.uuid + '<br />' +
-                                'Device Version: ' + device.version + '<br />');
-
             // Create Shaken object for shake detection
             var shaken = new Shaken({
                 frequency: 300,                                                //milliseconds between polls for accelerometer data.
@@ -809,9 +803,9 @@
         // Description: When shake is not detected
         // ------------------------------------------------------------------------------------------
         function shake_not_detected() {
-           // $('#debug_text').html('Shake is not detected');
+            // $('#debug_text').html('Shake is not detected');
         }
-        
+
 
         // ------------------------------------------------------------------------------------------
         // Name: shake_detecting()
@@ -820,13 +814,23 @@
         function shake_detecting(accelerationDelta, timestamp) {
             //    Debug print info
             if (_localConfig.IsDebug) {
-                $('#debug_text').html('Changes X: ' + accelerationDelta.x + '<br />' +
+
+                var text = 'Device Name: ' + device.name + '<br />' +
+                                   // 'Device Cordova: ' + device.cordova + '<br />' +
+                                    'Device Platform: ' + device.platform + '<br />' +
+                                   //  'Device UUID: ' + device.uuid + '<br />' +
+                                    'Device Version: ' + device.version + '<br />' +
+                                    'Changes X: ' + accelerationDelta.x + '<br />' +
                 'Changes Y: ' + accelerationDelta.y + '<br />' +
                 'Changes Z: ' + accelerationDelta.z + '<br />' +
-                'Timestamp: ' + timestamp + '<br />');
+                'Timestamp: ' + timestamp + '<br />'
+
+                $('#debug_text').html(text);
+
+
             }
         }
-                
+
 
         // ------------------------------------------------------------------------------------------
         // Name: on_resume()
@@ -863,7 +867,7 @@
                 if (!_localConfig.IsAutoRefresh)
                     stop_loop();
             }
-            
+
 
             // Put "M" or "A" on screen
             render_refresh_mode();
