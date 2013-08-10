@@ -69,19 +69,11 @@ function Shaken(options) {
 
         // first time
         if (previousReading.x == null) {
-            changes.x = 0;
-            changes.y = 0;
-            changes.z = 0;
-
-            previousReading = {
-                x: 0,
-                y: 0,
-                z: 0
-            }
+            changes.x = 0; changes.y = 0; changes.z = 0;
+            previousReading = { x: 0, y: 0, z: 0 }
         }
         else {
-
-            // Repeat 
+            // Repeat - get the delta
             changes.x = Math.abs(acceleration.x - previousReading.x);
             changes.y = Math.abs(acceleration.y - previousReading.y);
             changes.z = Math.abs(acceleration.z - previousReading.z);
@@ -91,11 +83,10 @@ function Shaken(options) {
                 y: acceleration.y,
                 z: acceleration.z
             }
-
         }
 
-        // report progress (e.g. print to screen)
-      options.progress.call(this, changes, acceleration.timestamp);
+        // report progress  (e.g. print to screen)
+        options.progress.call(this, changes, acceleration.timestamp);
 
         // magnitude
         var magnitude = Math.sqrt(
