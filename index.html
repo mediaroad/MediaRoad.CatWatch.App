@@ -791,7 +791,7 @@
         // Description: When shake is detected
         // ------------------------------------------------------------------------------------------
         function shake_detected(magnitude, accelerationDelta, timestamp) {
-            $('#debug_text').html('Shaken detected');
+            $('#debug_text').html('Shaken Detected');
 
             // Render image when shaken
             render_image();
@@ -821,6 +821,7 @@
                                    //  'Device UUID: ' + device.uuid + '<br />' +
                                     'Device Version: ' + device.version + '<br />' +
                                     'Changes X: ' + accelerationDelta.x + '<br />' +
+                                    '<br />' +
                 'Changes Y: ' + accelerationDelta.y + '<br />' +
                 'Changes Z: ' + accelerationDelta.z + '<br />' +
                 'Timestamp: ' + timestamp + '<br />'
