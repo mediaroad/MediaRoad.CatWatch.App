@@ -492,7 +492,7 @@
             imageObj.onload = function () {
 
                 // Draw the image
-                context.drawImage(imageObj, 0, 0);
+                context.drawImage(imageObj, 1, 1);
                 _images_counter++;
 
                 // Render last update
@@ -506,6 +506,8 @@
                 if (_is_remote_in_progress) {
                     render_progress();
                 }
+
+                context.clearRect(0, 0, 1, 1);
             };
 
             imageObj.src = image_url + '?id=3&data=' + encoded_data + '&d=' + new Date().getTime();
