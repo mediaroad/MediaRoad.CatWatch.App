@@ -492,7 +492,7 @@
             imageObj.onload = function () {
 
                 // Draw the image
-                context.drawImage(imageObj, 1, 1);
+                context.drawImage(imageObj, 0, 0);
                 _images_counter++;
 
                 // Render last update
@@ -507,11 +507,11 @@
                     render_progress();
                 }
 
-                context.clearRect(0, 0, 1, 1);
             };
 
             imageObj.src = image_url + '?id=3&data=' + encoded_data + '&d=' + new Date().getTime();
 
+            context.clearRect(0, 0, 1, 1);
 
         }
 
