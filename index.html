@@ -489,30 +489,33 @@
             var context = canvas[0].getContext('2d');
             var imageObj = new Image();
 
+            // clear
+            context.clearRect(1, 1, canvas.width, canvas.height);
+
             imageObj.onload = function () {
 
 
-                // clear
-                context.clearRect(1, 1, canvas.width, canvas.height);
                 
                 // Draw the image
                 context.drawImage(imageObj, 1, 1);
-                _images_counter++;
 
-                // Render last update
-                render_last_update();
+                //// Render last update
+                //render_last_update();
 
-                // Put "M" or "A" on screen
-                render_refresh_mode();
+                //// Put "M" or "A" on screen
+                //render_refresh_mode();
 
 
-                // Render progress
-                if (_is_remote_in_progress) {
-                    render_progress();
-                }
+                //// Render progress
+                //if (_is_remote_in_progress) {
+                //    render_progress();
+                //}
 
                 
             };
+
+
+            _images_counter++;
 
             imageObj.src = image_url + '?id=3&data=' + encoded_data + '&d=' + new Date().getTime();
 
