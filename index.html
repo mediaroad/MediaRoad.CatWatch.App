@@ -489,13 +489,9 @@
             var context = canvas[0].getContext('2d');
             var imageObj = new Image();
 
-            // clear
-            context.clearRect(1, 1, canvas.width, canvas.height);
-
             imageObj.onload = function () {
 
 
-                
                 // Draw the image
                 context.drawImage(imageObj, 1, 1);
 
@@ -519,6 +515,9 @@
 
             imageObj.src = image_url + '?id=3&data=' + encoded_data + '&d=' + new Date().getTime();
 
+
+            // clear
+            context.clearRect(1, 1, canvas.width, canvas.height);
 
         }
 
